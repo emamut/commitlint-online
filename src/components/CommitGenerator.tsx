@@ -15,6 +15,7 @@ const CommitGenerator = () => {
     subject: '',
     body: '',
   });
+  const [showCopySuccess, setShowCopySuccess] = useState(false);
 
   const commitTypes = [
     { value: 'feat', label: 'Features', description: 'A new feature' },
@@ -82,12 +83,15 @@ const CommitGenerator = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const { type, scope, subject, body } = formData;
-    const commitMessage = `${type}${
-      scope ? `(${scope})` : ''
-    }: ${subject}\n\n${body}`;
+    const commitMessage = `${type}${scope ? `(${scope})` : ''}: ${subject}${
+      body ? `\n\n${body}` : ''
+    }`;
     navigator.clipboard.writeText(commitMessage);
-    alert('Commit message copied to clipboard!');
+    setShowCopySuccess(true);
+    setTimeout(() => setShowCopySuccess(false), 2000);
   };
+
+  const selectedType = commitTypes.find((type) => type.value === formData.type);
 
   return (
     <div className="commit-generator">
@@ -109,6 +113,9 @@ const CommitGenerator = () => {
               </option>
             ))}
           </select>
+          {selectedType && (
+            <div className="type-description">{selectedType.description}</div>
+          )}
         </div>
 
         <div>
@@ -132,7 +139,7 @@ const CommitGenerator = () => {
             value={formData.subject}
             onChange={handleChange}
             required
-            placeholder="Brief description"
+            placeholder="Brief description in present tense"
           />
         </div>
 
@@ -143,13 +150,17 @@ const CommitGenerator = () => {
             name="body"
             value={formData.body}
             onChange={handleChange}
-            placeholder="Detailed description (optional)"
+            placeholder="Detailed description (optional). Include motivation for the change and contrasts with previous behavior."
             rows={4}
           />
         </div>
 
-        <button type="submit">Generate & Copy</button>
+        <button type="submit">Generate & Copy Commit Message</button>
       </form>
+
+      {showCopySuccess && (
+        <div className="copy-success">Commit message copied to clipboard!</div>
+      )}
     </div>
   );
 };
