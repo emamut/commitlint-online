@@ -10,7 +10,7 @@ export default function App() {
       <div className="app-container">
         <ThemeToggle />
         <div className="App">
-          <h1>Conventional Commit Generator</h1>
+          <h1>Commit Lint Generator</h1>
           <CommitGenerator />
         </div>
       </div>
